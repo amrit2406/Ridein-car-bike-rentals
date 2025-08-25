@@ -19,7 +19,7 @@ import {
   ArrowUp,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import logo from "../assets/ri-logo2.png"
+import logo from "../assets/ri-logo2.png";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -251,9 +251,12 @@ const Footer = () => {
 
           <div className="flex items-center gap-6 text-sm text-gray-500">
             {/* <a href="#" className="hover:text-green-400 transition-colors">Privacy Policy</a> */}
-            <a href="/terms" className="hover:text-green-400 transition-colors">
+            <Link
+              to="/terms"
+              className="hover:text-green-400 transition-colors"
+            >
               Terms & Condition
-            </a>
+            </Link>
             {/* <motion.button
               onClick={scrollToTop}
               className="flex items-center gap-1 text-green-400 hover:text-green-300 transition-colors"

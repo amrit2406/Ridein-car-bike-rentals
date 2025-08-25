@@ -11,6 +11,7 @@ import {
   ArrowRight,
   CheckCircle,
   Fuel,
+  MapPin,
 } from "lucide-react";
 import { FaMotorcycle, FaCar } from "react-icons/fa";
 
@@ -510,6 +511,7 @@ const BookingPage = () => {
     notes: "",
   });
 
+  const [pickupLocation, setPickupLocation] = useState(""); // default placeholder
   const [pickupDateTime, setPickupDateTime] = useState("");
   const [dropDateTime, setDropDateTime] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -838,6 +840,28 @@ const BookingPage = () => {
                     />
                   </motion.div>
 
+                  {/* Pickup Location */}
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-1 sm:mb-2 text-gray-700 flex items-center gap-2 text-sm sm:text-base">
+                      <MapPin className="w-4 h-4 text-green-600" />
+                      Pickup Location*
+                    </label>
+                    <select
+                      value={pickupLocation}
+                      onChange={(e) => setPickupLocation(e.target.value)}
+                      required
+                      className="w-full p-2 sm:p-3 border border-green-500 rounded-lg text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#4ADE80] text-sm sm:text-base"
+                    >
+                      <option value="" disabled>
+                        Select Location
+                      </option>
+                      <option value="airport-parking">Airport Parking</option>
+                      <option value="ridein-car-parking">
+                        RideIn Car Parking
+                      </option>
+                    </select>
+                  </motion.div>
+
                   {/* Passengers */}
                   <motion.div variants={fadeIn}>
                     <label className="block font-semibold mb-1 sm:mb-2 text-gray-700 flex items-center gap-2 text-sm sm:text-base">
@@ -946,6 +970,10 @@ const BookingPage = () => {
                         Trip Details
                       </h4>
                       <div className="divide-y divide-gray-200 text-xs sm:text-sm">
+                        <div className="py-2 flex justify-between">
+                          <span>Pickup Location:</span>
+                          <span>{pickupLocation}</span>
+                        </div>
                         <div className="py-2 flex justify-between">
                           <span>Passengers:</span>
                           <span>{form.people}</span>

@@ -23,7 +23,7 @@ const HeroSection = () => {
   const [dropoffDate, setDropoffDate] = useState("");
   const [dropoffTime, setDropoffTime] = useState("");
   const [showResults, setShowResults] = useState(false);
-  const [pickupLocation, setPickupLocation] = useState("airport-parking");
+  const [pickupLocation, setPickupLocation] = useState("location");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -225,6 +225,7 @@ const HeroSection = () => {
                 onChange={(e) => setPickupLocation(e.target.value)}
                 className="w-full p-2 sm:p-3 bg-gray-700 border border-green-500 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#4ADE80] text-sm sm:text-base"
               >
+                <option value="location"> Select Location </option>
                 <option value="airport-parking">Airport Parking</option>
                 <option value="ridein-car-parking">RideIn Car Parking</option>
               </select>
