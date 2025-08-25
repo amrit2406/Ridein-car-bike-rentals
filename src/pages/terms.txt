@@ -1,0 +1,573 @@
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Shield, FileText, Clock, AlertCircle, CheckCircle, ArrowRight } from "lucide-react";
+
+const TermsAndConditions = () => {
+  const [activeSection, setActiveSection] = useState("introduction");
+
+  // Animation variants
+  const fadeIn = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" }
+    }
+  };
+
+  const staggerChildren = {
+    visible: {
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const sections = [
+    { id: "introduction", title: "Introduction" },
+    { id: "definitions", title: "Definitions" },
+    { id: "bookings", title: "Bookings & Reservations" },
+    { id: "payments", title: "Payments & Fees" },
+    { id: "usage", title: "Vehicle Usage" },
+    { id: "insurance", title: "Insurance & Liability" },
+    { id: "cancellation", title: "Cancellations" },
+    { id: "privacy", title: "Privacy Policy" },
+    { id: "changes", title: "Changes to Terms" },
+  ];
+
+  return (
+    <main className="bg-gradient-to-b from-gray-50 to-white min-h-screen pb-20">
+      {/* Hero Banner */}
+      <section className="relative py-28 px-6 text-white text-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-teal-600 z-0"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center mix-blend-overlay opacity-20"></div>
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="relative z-10 max-w-4xl mx-auto"
+        >
+          <motion.span 
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-semibold mb-6"
+          >
+            Legal Information
+          </motion.span>
+          
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            Terms & <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-green-300">Conditions</span>
+          </h1>
+          
+          <p className="text-xl max-w-2xl mx-auto leading-relaxed">
+            Please read these terms carefully before using our services. By booking with Ridein, you agree to comply with these terms.
+          </p>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+            className="flex justify-center gap-6 mt-10"
+          >
+            {[
+              { icon: <FileText className="w-5 h-5" />, text: "Last Updated: Jan 15, 2024" },
+              { icon: <Shield className="w-5 h-5" />, text: "Legal Compliance" },
+              { icon: <Clock className="w-5 h-5" />, text: "Review Carefully" }
+            ].map((item, index) => (
+              <motion.div 
+                key={index}
+                whileHover={{ y: -5 }}
+                className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full"
+              >
+                {item.icon}
+                <span>{item.text}</span>
+              </motion.div>
+            ))}
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* Content Section */}
+      <section className="max-w-7xl mx-auto px-6 lg:px-8 mt-12">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Sidebar Navigation */}
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="lg:w-1/4"
+          >
+            <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-green-600" />
+                Sections
+              </h2>
+              
+              <nav className="space-y-2">
+                {sections.map((section) => (
+                  <button
+                    key={section.id}
+                    onClick={() => setActiveSection(section.id)}
+                    className={`w-full text-left px-4 py-3 rounded-xl transition-all ${
+                      activeSection === section.id
+                        ? "bg-green-100 text-green-700 font-semibold"
+                        : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                  >
+                    {section.title}
+                  </button>
+                ))}
+              </nav>
+              
+              <div className="mt-8 p-4 bg-amber-50 rounded-xl border border-amber-200">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                  <p className="text-sm text-amber-800">
+                    By using our services, you acknowledge that you have read, understood, and agree to be bound by these Terms.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Main Content */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="lg:w-3/4"
+          >
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              {/* Content based on active section */}
+              <div className="p-8">
+                {activeSection === "introduction" && (
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={staggerChildren}
+                  >
+                    <motion.h2 variants={fadeIn} className="text-2xl font-bold text-gray-900 mb-6">
+                      1. Introduction
+                    </motion.h2>
+                    
+                    <motion.p variants={fadeIn} className="text-gray-600 mb-6">
+                      Welcome to Ridein. These Terms and Conditions govern your use of our vehicle rental services, including cars, bikes, and other transportation solutions offered through our platform.
+                    </motion.p>
+                    
+                    <motion.div variants={fadeIn} className="bg-blue-50 p-6 rounded-xl mb-6">
+                      <h3 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
+                        <CheckCircle className="w-5 h-5" />
+                        Important Notice
+                      </h3>
+                      <p className="text-blue-700">
+                        These terms constitute a legally binding agreement between you (the "Renter") and Ridein ("Company", "we", "us", or "our"). Please read them carefully before making a reservation.
+                      </p>
+                    </motion.div>
+                    
+                    <motion.p variants={fadeIn} className="text-gray-600">
+                      By accessing or using our services, you acknowledge that you have read, understood, and agree to be bound by these Terms. If you do not agree with any part of these Terms, you must not use our services.
+                    </motion.p>
+                  </motion.div>
+                )}
+
+                {activeSection === "definitions" && (
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={staggerChildren}
+                  >
+                    <motion.h2 variants={fadeIn} className="text-2xl font-bold text-gray-900 mb-6">
+                      2. Definitions
+                    </motion.h2>
+                    
+                    <motion.div variants={fadeIn} className="space-y-4">
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <h3 className="font-semibold text-gray-900">"Agreement"</h3>
+                        <p className="text-gray-600">Refers to these Terms and Conditions and all attached schedules and appendices.</p>
+                      </div>
+                      
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <h3 className="font-semibold text-gray-900">"Rental Period"</h3>
+                        <p className="text-gray-600">The duration between the scheduled pickup time and return time of the vehicle.</p>
+                      </div>
+                      
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <h3 className="font-semibold text-gray-900">"Renter"</h3>
+                        <p className="text-gray-600">The person or entity identified as the customer in the booking confirmation.</p>
+                      </div>
+                      
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <h3 className="font-semibold text-gray-900">"Vehicle"</h3>
+                        <p className="text-gray-600">Any car, motorcycle, scooter, or other transportation device offered for rent by Ridein.</p>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )}
+
+                {activeSection === "bookings" && (
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={staggerChildren}
+                  >
+                    <motion.h2 variants={fadeIn} className="text-2xl font-bold text-gray-900 mb-6">
+                      3. Bookings & Reservations
+                    </motion.h2>
+                    
+                    <motion.div variants={fadeIn} className="space-y-6">
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">3.1 Booking Process</h3>
+                        <p className="text-gray-600">
+                          All bookings are subject to availability and confirmation. You must provide accurate and complete information during the booking process, including valid identification and payment details.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">3.2 Age Requirements</h3>
+                        <p className="text-gray-600">
+                          Renters must be at least 21 years of age for car rentals and 18 years of age for bike rentals. Additional age restrictions may apply for certain vehicle categories.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">3.3 Documentation</h3>
+                        <p className="text-gray-600">
+                          At the time of pickup, you must present a valid driver's license, proof of identity, and the credit card used for booking. International renters must present a valid passport and international driving permit where required.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">3.4 Booking Modifications</h3>
+                        <p className="text-gray-600">
+                          Changes to bookings are subject to availability and may incur additional charges. Modifications must be made through our official channels at least 24 hours before the scheduled pickup time.
+                        </p>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )}
+
+                {activeSection === "payments" && (
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={staggerChildren}
+                  >
+                    <motion.h2 variants={fadeIn} className="text-2xl font-bold text-gray-900 mb-6">
+                      4. Payments & Fees
+                    </motion.h2>
+                    
+                    <motion.div variants={fadeIn} className="space-y-6">
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">4.1 Rental Charges</h3>
+                        <p className="text-gray-600">
+                          Rental rates are calculated based on the duration of the rental period and the vehicle category selected. Additional charges may apply for extra services, accessories, or distance traveled beyond included limits.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">4.2 Security Deposit</h3>
+                        <p className="text-gray-600">
+                          A security deposit will be held on your credit card during the rental period. This deposit will be released upon satisfactory return of the vehicle, subject to deductions for any damages, violations, or additional charges.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">4.3 Additional Fees</h3>
+                        <ul className="list-disc list-inside text-gray-600 space-y-2 mt-2">
+                          <li>Late return fees: 1.5x the hourly rate for each hour beyond the scheduled return time</li>
+                          <li>Cleaning fee: $50 if vehicle is returned excessively dirty</li>
+                          <li>Fuel service fee: $10 plus cost of fuel if vehicle is returned with less fuel than when rented</li>
+                          <li>Toll and traffic violation fees: Actual cost plus administrative fees</li>
+                        </ul>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">4.4 Payment Methods</h3>
+                        <p className="text-gray-600">
+                          We accept major credit cards and digital payment methods. Cash payments may be accepted at certain locations, subject to additional verification requirements.
+                        </p>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )}
+
+                {activeSection === "usage" && (
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={staggerChildren}
+                  >
+                    <motion.h2 variants={fadeIn} className="text-2xl font-bold text-gray-900 mb-6">
+                      5. Vehicle Usage
+                    </motion.h2>
+                    
+                    <motion.div variants={fadeIn} className="space-y-6">
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">5.1 Authorized Drivers</h3>
+                        <p className="text-gray-600">
+                          Only the renter and additional drivers explicitly listed in the rental agreement are permitted to operate the vehicle. All drivers must meet age and license requirements.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">5.2 Prohibited Uses</h3>
+                        <p className="text-gray-600">
+                          The vehicle shall not be used for:
+                        </p>
+                        <ul className="list-disc list-inside text-gray-600 space-y-2 mt-2">
+                          <li>Illegal purposes or transportation of illegal materials</li>
+                          <li>Racing, speed tests, or other competitive driving</li>
+                          <li>Transporting passengers for hire or ride-sharing services</li>
+                          <li>Driving under the influence of alcohol or drugs</li>
+                          <li>Off-road driving unless specifically authorized</li>
+                          <li>Transporting hazardous materials</li>
+                        </ul>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">5.3 Geographic Restrictions</h3>
+                        <p className="text-gray-600">
+                          Vehicles may not be taken outside designated operating areas without prior written authorization. Cross-border travel may be subject to additional restrictions and fees.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">5.4 Vehicle Care</h3>
+                        <p className="text-gray-600">
+                          Renters are responsible for the vehicle during the rental period and must exercise reasonable care, secure the vehicle when not in use, and protect it from damage or theft.
+                        </p>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )}
+
+                {activeSection === "insurance" && (
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={staggerChildren}
+                  >
+                    <motion.h2 variants={fadeIn} className="text-2xl font-bold text-gray-900 mb-6">
+                      6. Insurance & Liability
+                    </motion.h2>
+                    
+                    <motion.div variants={fadeIn} className="space-y-6">
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">6.1 Basic Coverage</h3>
+                        <p className="text-gray-600">
+                          All rentals include basic third-party liability insurance as required by local law. Additional coverage options are available for purchase to reduce your financial responsibility in case of damage or theft.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">6.2 Damage Responsibility</h3>
+                        <p className="text-gray-600">
+                          The renter is responsible for all damage to the vehicle during the rental period, regardless of fault, up to the vehicle's deductible amount. Certain exclusions apply for unauthorized uses or violations of these terms.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">6.3 Accident Procedures</h3>
+                        <p className="text-gray-600">
+                          In case of an accident, theft, or damage, you must immediately contact local authorities and our emergency assistance line. Failure to report incidents promptly may result in additional charges or loss of insurance coverage.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">6.4 Personal Belongings</h3>
+                        <p className="text-gray-600">
+                          We are not responsible for loss or damage to personal belongings left in the vehicle. Renters are advised to remove all valuables when the vehicle is unattended.
+                        </p>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )}
+
+                {activeSection === "cancellation" && (
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={staggerChildren}
+                  >
+                    <motion.h2 variants={fadeIn} className="text-2xl font-bold text-gray-900 mb-6">
+                      7. Cancellations & Refunds
+                    </motion.h2>
+                    
+                    <motion.div variants={fadeIn} className="space-y-6">
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">7.1 Cancellation Policy</h3>
+                        <p className="text-gray-600">
+                          Cancellations made more than 24 hours before the scheduled pickup time will receive a full refund. Cancellations within 24 hours may be subject to a cancellation fee equivalent to one day's rental rate.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">7.2 No-Show Policy</h3>
+                        <p className="text-gray-600">
+                          Failure to pick up the vehicle within 2 hours of the scheduled time without prior notification will be considered a no-show, resulting in cancellation of the reservation and forfeiture of any prepaid amounts.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">7.3 Early Returns</h3>
+                        <p className="text-gray-600">
+                          Early return of the vehicle does not entitle the renter to a refund for unused rental days. The rental rate is based on the original booking duration.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">7.4 Company Cancellations</h3>
+                        <p className="text-gray-600">
+                          We reserve the right to cancel reservations due to unforeseen circumstances, vehicle availability issues, or safety concerns. In such cases, we will provide a full refund or alternative arrangements.
+                        </p>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )}
+
+                {activeSection === "privacy" && (
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={staggerChildren}
+                  >
+                    <motion.h2 variants={fadeIn} className="text-2xl font-bold text-gray-900 mb-6">
+                      8. Privacy Policy
+                    </motion.h2>
+                    
+                    <motion.div variants={fadeIn} className="space-y-6">
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">8.1 Information Collection</h3>
+                        <p className="text-gray-600">
+                          We collect personal information necessary to provide our services, including contact details, payment information, driving license data, and rental history. This information is handled in accordance with our Privacy Policy.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">8.2 Data Usage</h3>
+                        <p className="text-gray-600">
+                          Your information is used to process bookings, provide customer support, improve our services, and comply with legal requirements. We may also use your contact information to send service-related communications and marketing materials (you may opt out at any time).
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">8.3 Data Security</h3>
+                        <p className="text-gray-600">
+                          We implement appropriate security measures to protect your personal information against unauthorized access, alteration, or destruction. However, no method of transmission over the Internet is 100% secure.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">8.4 Third-Party Sharing</h3>
+                        <p className="text-gray-600">
+                          We may share your information with service providers, insurance companies, and law enforcement agencies as necessary to provide our services or comply with legal obligations. We do not sell your personal information to third parties.
+                        </p>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )}
+
+                {activeSection === "changes" && (
+                  <motion.div
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={staggerChildren}
+                  >
+                    <motion.h2 variants={fadeIn} className="text-2xl font-bold text-gray-900 mb-6">
+                      9. Changes to Terms
+                    </motion.h2>
+                    
+                    <motion.div variants={fadeIn} className="space-y-6">
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">9.1 Modifications</h3>
+                        <p className="text-gray-600">
+                          We reserve the right to modify these Terms at any time. Changes will be effective upon posting to our website. Your continued use of our services after changes constitutes acceptance of the modified Terms.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">9.2 Notification</h3>
+                        <p className="text-gray-600">
+                          For material changes to these Terms, we will make reasonable efforts to notify you via email or through our platform. It is your responsibility to review these Terms periodically for updates.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">9.3 Governing Law</h3>
+                        <p className="text-gray-600">
+                          These Terms are governed by the laws of the jurisdiction where Ridein is registered. Any disputes arising from these Terms shall be subject to the exclusive jurisdiction of the courts in that jurisdiction.
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="font-semibold text-gray-900 mb-2">9.4 Severability</h3>
+                        <p className="text-gray-600">
+                          If any provision of these Terms is found to be invalid or unenforceable, the remaining provisions will continue to be valid and enforceable to the fullest extent permitted by law.
+                        </p>
+                      </div>
+
+                      <motion.div variants={fadeIn} className="bg-green-50 p-6 rounded-xl mt-8">
+                        <h3 className="font-semibold text-green-800 mb-3">Acceptance of Terms</h3>
+                        <p className="text-green-700">
+                          By using our services, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions. If you have any questions, please contact our customer support team before making a reservation.
+                        </p>
+                      </motion.div>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="bg-gray-50 p-6 border-t border-gray-200">
+                <div className="flex flex-col md:flex-row justify-between items-center">
+                  <p className="text-gray-600 text-sm">
+                    Last updated: January 15, 2024
+                  </p>
+                  <button className="mt-4 md:mt-0 bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4" />
+                    I Understand These Terms
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <motion.section 
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        viewport={{ once: true }}
+        className="max-w-4xl mx-auto px-6 lg:px-8 mt-16"
+      >
+        <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Questions About Our Terms?</h2>
+          <p className="text-gray-600 mb-6">
+            If you have any questions or concerns about our Terms and Conditions, please don't hesitate to contact our legal team.
+          </p>
+          <button className="bg-gradient-to-r from-green-600 to-teal-600 text-white px-6 py-3 rounded-lg font-medium hover:shadow-lg transition-all">
+            Contact Legal Department
+          </button>
+        </div>
+      </motion.section>
+    </main>
+  );
+};
+
+export default TermsAndConditions;

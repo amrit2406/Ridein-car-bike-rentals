@@ -1,0 +1,2395 @@
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Car, Bike, CalendarDays, Users, Clock, Mail, Phone, ArrowRight, CheckCircle, MapPin, Filter, Search, Fuel } from "lucide-react";
+
+const BookingPage = () => {
+  const [activeTab, setActiveTab] = useState("cars");
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [pricingOption, setPricingOption] = useState("24hr");
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    people: 1,
+    pickupDate: "",
+    pickupTime: "10:00",
+    dropDate: "",
+    dropTime: "10:00",
+    notes: "",
+  });
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Sample data with 10 cars and 10 bikes - updated with dual pricing
+  const cars = [
+    { 
+      id: 1, 
+      name: "Toyota Corolla", 
+      price12hr: "$30/12hrs",
+      price24hr: "$50/day",
+      image: "https://images.unsplash.com/photo-1502877338535-766e56c3a7a7?auto=format&fit=crop&w=500&q=80",
+      features: "5 seats • Automatic • AC",
+      type: "economy",
+      fuel: "Petrol",
+      rating: 4.8
+    },
+    { 
+      id: 2, 
+      name: "Honda Civic", 
+      price12hr: "$25/12hrs",
+      price24hr: "$45/day",
+      image: "https://images.unsplash.com/photo-1483728642387-6c2a897fa4c2?auto=format&fit=crop&w=500&q=80",
+      features: "5 seats • Manual • AC",
+      type: "economy",
+      fuel: "Hybrid",
+      rating: 4.7
+    },
+    { 
+      id: 3, 
+      name: "BMW 5 Series", 
+      price12hr: "$60/12hrs",
+      price24hr: "$100/day",
+      image: "https://images.unsplash.com/photo-1511391403515-ec2e9a687df0?auto=format&fit=crop&w=500&q=80",
+      features: "4 seats • Automatic • Luxury",
+      type: "luxury",
+      fuel: "Petrol",
+      rating: 4.9
+    },
+    { 
+      id: 4, 
+      name: "Tesla Model 3", 
+      price12hr: "$50/12hrs",
+      price24hr: "$85/day",
+      image: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=500&q=80",
+      features: "5 seats • Automatic • Electric",
+      type: "premium",
+      fuel: "Electric",
+      rating: 4.9
+    },
+    { 
+      id: 5, 
+      name: "Ford Mustang", 
+      price12hr: "$70/12hrs",
+      price24hr: "$120/day",
+      image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=500&q=80",
+      features: "4 seats • Manual • Sport",
+      type: "sports",
+      fuel: "Petrol",
+      rating: 4.8
+    },
+    { 
+      id: 6, 
+      name: "Hyundai Tucson", 
+      price12hr: "$40/12hrs",
+      price24hr: "$65/day",
+      image: "https://images.unsplash.com/photo-1593941707882-a5bba53377fe?auto=format&fit=crop&w=500&q=80",
+      features: "5 seats • Automatic • SUV",
+      type: "suv",
+      fuel: "Diesel",
+      rating: 4.6
+    },
+    { 
+      id: 7, 
+      name: "Audi Q7", 
+      price12hr: "$80/12hrs",
+      price24hr: "$130/day",
+      image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=500&q=80",
+      features: "7 seats • Automatic • Luxury SUV",
+      type: "luxury",
+      fuel: "Petrol",
+      rating: 4.8
+    },
+    { 
+      id: 8, 
+      name: "Nissan Leaf", 
+      price12hr: "$35/12hrs",
+      price24hr: "$60/day",
+      image: "https://images.unsplash.com/photo-1593941707882-a5bba53377fe?auto=format&fit=crop&w=500&q=80",
+      features: "5 seats • Automatic • Electric",
+      type: "economy",
+      fuel: "Electric",
+      rating: 4.5
+    },
+    { 
+      id: 9, 
+      name: "Jeep Wrangler", 
+      price12hr: "$55/12hrs",
+      price24hr: "$90/day",
+      image: "https://images.unsplash.com/photo-1507136566006-cfc505b114fc?auto=format&fit=crop&w=500&q=80",
+      features: "5 seats • Manual • Off-road",
+      type: "suv",
+      fuel: "Petrol",
+      rating: 4.7
+    },
+    { 
+      id: 10, 
+      name: "Mercedes S-Class", 
+      price12hr: "$90/12hrs",
+      price24hr: "$150/day",
+      image: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=500&q=80",
+      features: "5 seats • Automatic • Executive",
+      type: "luxury",
+      fuel: "Petrol",
+      rating: 4.9
+    },
+  ];
+
+  const bikes = [
+    { 
+      id: 1, 
+      name: "Royal Enfield Classic", 
+      price12hr: "$15/12hrs",
+      price24hr: "$25/day",
+      image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Cruiser",
+      type: "cruiser",
+      engine: "350cc",
+      rating: 4.7
+    },
+    { 
+      id: 2, 
+      name: "Yamaha FZ", 
+      price12hr: "$12/12hrs",
+      price24hr: "$20/day",
+      image: "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Street",
+      type: "street",
+      engine: "150cc",
+      rating: 4.6
+    },
+    { 
+      id: 3, 
+      name: "KTM Duke", 
+      price12hr: "$18/12hrs",
+      price24hr: "$30/day",
+      image: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Sport",
+      type: "sports",
+      engine: "390cc",
+      rating: 4.8
+    },
+    { 
+      id: 4, 
+      name: "Harley Davidson", 
+      price12hr: "$45/12hrs",
+      price24hr: "$75/day",
+      image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Touring",
+      type: "touring",
+      engine: "1200cc",
+      rating: 4.9
+    },
+    { 
+      id: 5, 
+      name: "Honda CB500X", 
+      price12hr: "$27/12hrs",
+      price24hr: "$45/day",
+      image: "https://images.unsplash.com/photo-1571068316344-75bc76f77890?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Adventure",
+      type: "adventure",
+      engine: "500cc",
+      rating: 4.7
+    },
+    { 
+      id: 6, 
+      name: "Ducati Monster", 
+      price12hr: "$51/12hrs",
+      price24hr: "$85/day",
+      image: "https://images.unsplash.com/photo-1609630875171-b1321377ee65?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Naked",
+      type: "naked",
+      engine: "800cc",
+      rating: 4.9
+    },
+    { 
+      id: 7, 
+      name: "Suzuki Hayabusa", 
+      price12hr: "$57/12hrs",
+      price24hr: "$95/day",
+      image: "https://images.unsplash.com/photo-1623778027845-1a3c58d3376b?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Sport",
+      type: "sports",
+      engine: "1300cc",
+      rating: 4.8
+    },
+    { 
+      id: 8, 
+      name: "Triumph Tiger", 
+      price12hr: "$42/12hrs",
+      price24hr: "$70/day",
+      image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Adventure",
+      type: "adventure",
+      engine: "900cc",
+      rating: 4.7
+    },
+    { 
+      id: 9, 
+      name: "Kawasaki Ninja", 
+      price12hr: "$33/12hrs",
+      price24hr: "$55/day",
+      image: "https://images.unsplash.com/photo-1609630875171-b1321377ee65?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Sport",
+      type: "sports",
+      engine: "650cc",
+      rating: 4.6
+    },
+    { 
+      id: 10, 
+      name: "Vespa Primavera", 
+      price12hr: "$15/12hrs",
+      price24hr: "$25/day",
+      image: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Automatic • Scooter",
+      type: "scooter",
+      engine: "150cc",
+      rating: 4.5
+    },
+  ];
+
+  const handleChange = (e) => {
+    setForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handlePricingChange = (option) => {
+    setPricingOption(option);
+  };
+  
+  const calculateTotal = () => {
+    if (!form.pickupDate || !form.dropDate || !selectedVehicle) return 0;
+    
+    const pickupDateTime = new Date(`${form.pickupDate}T${form.pickupTime}`);
+    const dropDateTime = new Date(`${form.dropDate}T${form.dropTime}`);
+    const diffHours = Math.ceil((dropDateTime - pickupDateTime) / (1000 * 60 * 60));
+    
+    let pricePerUnit;
+    let unitHours;
+    
+    if (pricingOption === "12hr") {
+      pricePerUnit = parseFloat(selectedVehicle.price12hr.replace(/[^0-9.]/g, ''));
+      unitHours = 12;
+    } else {
+      pricePerUnit = parseFloat(selectedVehicle.price24hr.replace(/[^0-9.]/g, ''));
+      unitHours = 24;
+    }
+    
+    const units = Math.ceil(diffHours / unitHours);
+    return units * pricePerUnit;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    // Prepare WhatsApp message
+    const total = calculateTotal();
+    const message = `New Booking Details:%0A%0A` +
+      `Vehicle: ${selectedVehicle.name}%0A` +
+      `Pricing: ${pricingOption === "12hr" ? selectedVehicle.price12hr : selectedVehicle.price24hr}%0A` +
+      `Pickup: ${form.pickupDate} at ${form.pickupTime}%0A` +
+      `Return: ${form.dropDate} at ${form.dropTime}%0A` +
+      `Passengers: ${form.people}%0A` +
+      `Name: ${form.name}%0A` +
+      `Email: ${form.email}%0A` +
+      `Phone: ${form.phone}%0A` +
+      `Notes: ${form.notes || "None"}%0A%0A` +
+      `Total: $${total}`;
+    
+    // Open WhatsApp with pre-filled message
+    const whatsappURL = `https://wa.me/1234567890?text=${encodeURIComponent(message)}`;
+    window.open(whatsappURL, '_blank');
+    
+    setIsSubmitted(true);
+    
+    // Reset form after 3 seconds
+    setTimeout(() => {
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        people: 1,
+        pickupDate: "",
+        pickupTime: "10:00",
+        dropDate: "",
+        dropTime: "10:00",
+        notes: "",
+      });
+      setSelectedVehicle(null);
+      setPricingOption("24hr");
+      setIsSubmitted(false);
+    }, 3000);
+  };
+
+  // Animation variants
+  const fadeIn = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" }
+    }
+  };
+
+  const staggerChildren = {
+    visible: {
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const cardHover = {
+    hover: { 
+      scale: 1.03,
+      y: -5,
+      transition: { duration: 0.3 }
+    }
+  };
+
+  const pulse = {
+    hover: { 
+      scale: 1.05,
+      transition: { 
+        duration: 0.3,
+        repeat: Infinity,
+        repeatType: "reverse",
+        repeatDelay: 0.5
+      }
+    }
+  };
+
+  const VehicleCard = ({ vehicle, type }) => (
+    <motion.div
+      variants={fadeIn}
+      whileHover="hover"
+      className={`rounded-2xl p-4 flex flex-col border-2 font-semibold transition-all overflow-hidden relative bg-white cursor-pointer
+        ${selectedVehicle?.id === vehicle.id ? "border-green-500 bg-green-50" : "border-gray-200 hover:border-green-300"}`}
+      onClick={() => setSelectedVehicle(vehicle)}
+    >
+      {/* Selection indicator */}
+      {selectedVehicle?.id === vehicle.id && (
+        <motion.div 
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="absolute top-2 right-2 bg-green-500 rounded-full p-1"
+        >
+          <CheckCircle className="w-4 h-4 text-white" />
+        </motion.div>
+      )}
+      
+      <div className="h-40 w-full mb-3 rounded-lg overflow-hidden">
+        <img 
+          src={vehicle.image} 
+          alt={vehicle.name}
+          className="h-full w-full object-cover"
+        />
+      </div>
+      
+      <h3 className="text-gray-900 font-bold">{vehicle.name}</h3>
+      <div className="flex justify-between items-center mt-1">
+        <p className="text-green-600 font-semibold">{vehicle.price12hr}</p>
+        <p className="text-green-600 font-semibold">{vehicle.price24hr}</p>
+      </div>
+      <p className="text-gray-500 text-sm mt-1">{vehicle.features.split('•')[0]}</p>
+      
+      <div className="flex items-center mt-3">
+        <div className="flex items-center text-amber-500">
+          <span className="text-sm font-bold mr-1">{vehicle.rating}</span>
+          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+          </svg>
+        </div>
+        
+        {type === "car" ? (
+          <div className="ml-auto flex items-center text-sm text-gray-500">
+            <Fuel className="w-4 h-4 mr-1" />
+            <span>{vehicle.fuel}</span>
+          </div>
+        ) : (
+          <div className="ml-auto text-sm text-gray-500">
+            <span>{vehicle.engine}</span>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+
+  return (
+    <main className="bg-gradient-to-b from-gray-50 to-white min-h-screen pb-20">
+      {/* Hero Banner */}
+      <section className="relative py-28 px-6 text-white text-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-teal-600 z-0"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center mix-blend-overlay opacity-20"></div>
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="relative z-10 max-w-4xl mx-auto"
+        >
+          <motion.span 
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-semibold mb-6"
+          >
+            Reserve Your Ride
+          </motion.span>
+          
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            Book Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-green-300">Adventure</span>
+          </h1>
+          
+          <p className="text-xl max-w-2xl mx-auto leading-relaxed">
+            Choose from our premium fleet of cars and bikes. Select your vehicle, fill in your details, and hit book—adventure awaits.
+          </p>
+        </motion.div>
+      </section>
+
+      {/* Two-step process: Vehicle selection then booking form */}
+      <section className="max-w-7xl mx-auto px-6 lg:px-8 mt-12">
+        {!selectedVehicle ? (
+          // Step 1: Vehicle Selection
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-3xl shadow-2xl overflow-hidden p-8"
+          >
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Choose Your Vehicle</h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Select from our premium fleet of cars and bikes. Filter by category to find your perfect ride.
+              </p>
+            </div>
+
+            {/* Tabs for Cars vs Bikes */}
+            <div className="flex justify-center gap-4 mb-10">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setActiveTab("cars")}
+                className={`px-8 py-3 rounded-full font-bold transition-all ${
+                  activeTab === "cars"
+                    ? "bg-green-600 text-white shadow-md"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Car className="w-5 h-5" />
+                  <span>Cars ({cars.length})</span>
+                </div>
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setActiveTab("bikes")}
+                className={`px-8 py-3 rounded-full font-bold transition-all ${
+                  activeTab === "bikes"
+                    ? "bg-green-600 text-white shadow-md"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Bike className="w-5 h-5" />
+                  <span>Bikes ({bikes.length})</span>
+                </div>
+              </motion.button>
+            </div>
+
+            {/* Vehicle Grid */}
+            <motion.div
+              variants={staggerChildren}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            >
+              <AnimatePresence>
+                {(activeTab === "cars" ? cars : bikes).map((vehicle) => (
+                  <VehicleCard 
+                    key={vehicle.id} 
+                    vehicle={vehicle} 
+                    type={activeTab === "cars" ? "car" : "bike"} 
+                  />
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          </motion.div>
+        ) : (
+          // Step 2: Booking Form
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-3xl shadow-2xl overflow-hidden"
+          >
+            <div className="p-8 border-b border-gray-200">
+              <button 
+                onClick={() => setSelectedVehicle(null)}
+                className="flex items-center text-green-600 font-semibold mb-4"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to vehicle selection
+              </button>
+              
+              <div className="flex items-center gap-4">
+                <div className="h-16 w-16 rounded-lg overflow-hidden">
+                  <img 
+                    src={selectedVehicle.image} 
+                    alt={selectedVehicle.name}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">{selectedVehicle.name}</h2>
+                  <div className="flex gap-2">
+                    <p className="text-green-600 font-semibold">{selectedVehicle.price12hr}</p>
+                    <p className="text-green-600 font-semibold">{selectedVehicle.price24hr}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+              {/* Left Column - Form */}
+              <div className="p-8 lg:p-12">
+                <motion.h2 
+                  variants={fadeIn}
+                  className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3"
+                >
+                  <div className="p-2 bg-blue-100 rounded-full">
+                    <CalendarDays className="w-5 h-5 text-blue-600" />
+                  </div>
+                  Booking Details
+                </motion.h2>
+                
+                <motion.div
+                  variants={staggerChildren}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
+                  className="space-y-6"
+                >
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-green-600" />
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={form.name}
+                      onChange={handleChange}
+                      required
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      placeholder="Your full name"
+                    />
+                  </motion.div>
+                  
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-green-600" />
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={form.email}
+                      onChange={handleChange}
+                      required
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      placeholder="Your email address"
+                    />
+                  </motion.div>
+                  
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-green-600" />
+                      Phone
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={form.phone}
+                      onChange={handleChange}
+                      required
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      placeholder="Your phone number"
+                    />
+                  </motion.div>
+                  
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                      <Users className="w-4 h-4 text-green-600" />
+                      Passengers
+                    </label>
+                    <input
+                      type="number"
+                      name="people"
+                      value={form.people}
+                      min="1"
+                      max="10"
+                      onChange={handleChange}
+                      required
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                    />
+                  </motion.div>
+                  
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                      <CalendarDays className="w-4 h-4 text-green-600" />
+                      Pickup Date & Time
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <input
+                        type="date"
+                        name="pickupDate"
+                        value={form.pickupDate}
+                        onChange={handleChange}
+                        required
+                        className="border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      />
+                      <input
+                        type="time"
+                        name="pickupTime"
+                        value={form.pickupTime}
+                        onChange={handleChange}
+                        required
+                        className="border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      />
+                    </div>
+                  </motion.div>
+                  
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-green-600" />
+                      Return Date & Time
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <input
+                        type="date"
+                        name="dropDate"
+                        value={form.dropDate}
+                        onChange={handleChange}
+                        required
+                        className="border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      />
+                      <input
+                        type="time"
+                        name="dropTime"
+                        value={form.dropTime}
+                        onChange={handleChange}
+                        required
+                        className="border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      />
+                    </div>
+                  </motion.div>
+                  
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700">
+                      Pricing Option
+                    </label>
+                    <div className="flex gap-4">
+                      <button
+                        type="button"
+                        onClick={() => handlePricingChange("12hr")}
+                        className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                          pricingOption === "12hr"
+                            ? "bg-green-600 text-white"
+                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        }`}
+                      >
+                        12 Hours
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handlePricingChange("24hr")}
+                        className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                          pricingOption === "24hr"
+                            ? "bg-green-600 text-white"
+                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        }`}
+                      >
+                        24 Hours
+                      </button>
+                    </div>
+                  </motion.div>
+                  
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700">
+                      Special Requests / Notes
+                    </label>
+                    <textarea
+                      name="notes"
+                      value={form.notes}
+                      onChange={handleChange}
+                      rows={3}
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      placeholder="Let us know anything important..."
+                    />
+                  </motion.div>
+                </motion.div>
+              </div>
+
+              {/* Right Column - Summary */}
+              <div className="bg-gradient-to-b from-green-50 to-teal-50 p-8 lg:p-12 border-l border-gray-200">
+                <motion.div
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                  viewport={{ once: true }}
+                  className="sticky top-8"
+                >
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                    <div className="p-2 bg-green-100 rounded-full">
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    </div>
+                    Booking Summary
+                  </h2>
+                  
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="bg-white rounded-2xl p-6 shadow-sm mb-8"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="h-16 w-16 rounded-lg overflow-hidden">
+                        <img 
+                          src={selectedVehicle.image} 
+                          alt={selectedVehicle.name}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-gray-900">{selectedVehicle.name}</h3>
+                        <div className="flex gap-2">
+                          <p className="text-green-600 font-semibold">{selectedVehicle.price12hr}</p>
+                          <p className="text-green-600 font-semibold">{selectedVehicle.price24hr}</p>
+                        </div>
+                        <p className="text-gray-500 text-sm">{selectedVehicle.features}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                  
+                  <div className="bg-white rounded-2xl p-6 shadow-sm mb-8">
+                    <h3 className="font-bold text-gray-900 mb-4">Trip Details</h3>
+                    
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Pricing Option</span>
+                        <span className="font-medium">{pricingOption === "12hr" ? selectedVehicle.price12hr : selectedVehicle.price24hr}</span>
+                      </div>
+                      
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Passengers</span>
+                        <span className="font-medium">{form.people} {form.people > 1 ? "people" : "person"}</span>
+                      </div>
+                      
+                      {form.pickupDate && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Pickup</span>
+                          <span className="font-medium">{form.pickupDate} at {form.pickupTime}</span>
+                        </div>
+                      )}
+                      
+                      {form.dropDate && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Return</span>
+                          <span className="font-medium">{form.dropDate} at {form.dropTime}</span>
+                        </div>
+                      )}
+                      
+                      {form.pickupDate && form.dropDate && (
+                        <div className="pt-3 border-t border-gray-100">
+                          <div className="flex justify-between text-green-600 font-semibold">
+                            <span>Estimated Total</span>
+                            <span>${calculateTotal()}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white rounded-2xl p-6 shadow-sm mb-8">
+                    <h3 className="font-bold text-gray-900 mb-4">Contact Info</h3>
+                    
+                    <div className="space-y-3">
+                      {form.name && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Name</span>
+                          <span className="font-medium">{form.name}</span>
+                        </div>
+                      )}
+                      
+                      {form.email && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Email</span>
+                          <span className="font-medium">{form.email}</span>
+                        </div>
+                      )}
+                      
+                      {form.phone && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Phone</span>
+                          <span className="font-medium">{form.phone}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <AnimatePresence>
+                    {isSubmitted ? (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="bg-green-100 border border-green-200 text-green-700 p-6 rounded-2xl text-center"
+                      >
+                        <CheckCircle className="w-12 h-12 mx-auto mb-3" />
+                        <h3 className="font-bold text-lg mb-2">Booking Sent to WhatsApp!</h3>
+                        <p>We'll contact you soon to confirm your reservation.</p>
+                      </motion.div>
+                    ) : (
+                      <motion.button
+                        type="submit"
+                        whileHover="hover"
+                        variants={pulse}
+                        disabled={!form.name || !form.email || !form.phone || !form.pickupDate || !form.dropDate}
+                        className="w-full bg-gradient-to-r from-green-600 to-teal-600 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <CheckCircle className="w-5 h-5" />
+                        Confirm Booking
+                        <ArrowRight className="w-5 h-5" />
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              </div>
+            </form>
+          </motion.div>
+        )}
+      </section>
+    </main>
+  );
+};
+
+export default BookingPage;
+// by z.ai 
+
+
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Car, Bike, CalendarDays, Users, Clock, Mail, Phone, ArrowRight, CheckCircle, Fuel } from "lucide-react";
+
+const cars = [
+  {
+    id: 1,
+    name: "Toyota Corolla",
+    image: "https://images.unsplash.com/photo-1502877338535-766e56c3a7a7?auto=format&fit=crop&w=500&q=80",
+    features: "5 seats • Automatic • AC",
+    type: "economy",
+    fuel: "Petrol",
+    rating: 4.8,
+    price12hrs: 30,
+    price24hrs: 50
+  },
+  {
+    id: 2,
+    name: "Honda Civic",
+    image: "https://images.unsplash.com/photo-1483728642387-6c2a897fa4c2?auto=format&fit=crop&w=500&q=80",
+    features: "5 seats • Manual • AC",
+    type: "economy",
+    fuel: "Hybrid",
+    rating: 4.7,
+    price12hrs: 28,
+    price24hrs: 45
+  },
+  // ...add more cars as needed with both price12hrs and price24hrs
+];
+
+const bikes = [
+  {
+    id: 1,
+    name: "Royal Enfield Classic",
+    image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=500&q=80",
+    features: "2 seats • Manual • Cruiser",
+    type: "cruiser",
+    engine: "350cc",
+    rating: 4.7,
+    price12hrs: 15,
+    price24hrs: 25
+  },
+  {
+    id: 2,
+    name: "Yamaha FZ",
+    image: "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=500&q=80",
+    features: "2 seats • Manual • Street",
+    type: "street",
+    engine: "150cc",
+    rating: 4.6,
+    price12hrs: 12,
+    price24hrs: 20
+  },
+  // ...add more bikes as needed with both price12hrs and price24hrs
+];
+
+// Helper - return hours between two datetime-local input strings
+function getHourDiff(start, end) {
+  if (!start || !end) return 0;
+  const startTime = new Date(start);
+  const endTime = new Date(end);
+  const diffMs = endTime - startTime;
+  return Math.ceil(diffMs / (1000 * 60 * 60));
+}
+
+function calcTotal(vehicle, hours) {
+  if (!vehicle) return 0;
+  let total = 0;
+  let hrsLeft = hours;
+  while (hrsLeft > 0) {
+    if (hrsLeft >= 24) {
+      total += vehicle.price24hrs;
+      hrsLeft -= 24;
+    } else if (hrsLeft > 12) {
+      total += vehicle.price24hrs;
+      hrsLeft = 0;
+    } else {
+      total += vehicle.price12hrs;
+      hrsLeft = 0;
+    }
+  }
+  return total;
+}
+
+const fadeIn = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const staggerChildren = {
+  visible: {
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const cardHover = {
+  hover: { scale: 1.03, y: -5, transition: { duration: 0.3 } }
+};
+
+const pulse = {
+  hover: { 
+    scale: 1.05,
+    transition: { duration: 0.3, repeat: Infinity, repeatType: "reverse", repeatDelay: 0.5 }
+  }
+};
+
+const BookingPage = () => {
+  const [activeTab, setActiveTab] = useState("cars");
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [pickupDateTime, setPickupDateTime] = useState("");
+  const [dropDateTime, setDropDateTime] = useState("");
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    people: 1,
+    notes: ""
+  });
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const VehicleCard = ({ vehicle, type }) => (
+    <motion.div
+      variants={fadeIn}
+      whileHover="hover"
+      className={`rounded-2xl p-4 flex flex-col border-2 font-semibold transition-all overflow-hidden relative bg-white cursor-pointer
+        ${selectedVehicle?.id === vehicle.id ? "border-green-500 bg-green-50" : "border-gray-200 hover:border-green-300"}`}
+      onClick={() => setSelectedVehicle(vehicle)}
+    >
+      {selectedVehicle?.id === vehicle.id && (
+        <motion.div 
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="absolute top-2 right-2 bg-green-500 rounded-full p-1"
+        >
+          <CheckCircle className="w-4 h-4 text-white" />
+        </motion.div>
+      )}
+      <div className="h-40 w-full mb-3 rounded-lg overflow-hidden">
+        <img 
+          src={vehicle.image} 
+          alt={vehicle.name}
+          className="h-full w-full object-cover"
+        />
+      </div>
+      <h3 className="text-gray-900 font-bold">{vehicle.name}</h3>
+      <div className="text-green-600 font-semibold mt-1 flex gap-2">
+        <span>₹{vehicle.price12hrs}/12hrs</span>
+        <span>•</span>
+        <span>₹{vehicle.price24hrs}/24hrs</span>
+      </div>
+      <p className="text-gray-500 text-sm mt-1">{vehicle.features.split('•')[0]}</p>
+      <div className="flex items-center mt-3">
+        <div className="flex items-center text-amber-500">
+          <span className="text-sm font-bold mr-1">{vehicle.rating}</span>
+          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+          </svg>
+        </div>
+        {type === "car" ? (
+          <div className="ml-auto flex items-center text-sm text-gray-500">
+            <Fuel className="w-4 h-4 mr-1" />
+            <span>{vehicle.fuel}</span>
+          </div>
+        ) : (
+          <div className="ml-auto text-sm text-gray-500">
+            <span>{vehicle.engine}</span>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+
+  // Calculate duration and price
+  const hourDiff = (pickupDateTime && dropDateTime)
+    ? getHourDiff(pickupDateTime, dropDateTime)
+    : 0;
+  const totalPrice = selectedVehicle && hourDiff > 0
+    ? calcTotal(selectedVehicle, hourDiff)
+    : 0;
+
+  // WhatsApp booking
+  const handleConfirm = () => {
+    const summary = `
+Booking Request:
+Vehicle: ${selectedVehicle.name}
+Features: ${selectedVehicle.features}
+Pickup: ${pickupDateTime}
+Return: ${dropDateTime}
+Duration: ${hourDiff} hours
+Total Cost: ₹${totalPrice}
+
+Name: ${form.name}
+Email: ${form.email}
+Phone: ${form.phone}
+Passengers: ${form.people}
+Notes: ${form.notes}
+    `.trim();
+
+    const whatsappUrl = `https://wa.me/91XXXXXXXXXX?text=${encodeURIComponent(summary)}`; // <--- Change to your WhatsApp number!
+    window.open(whatsappUrl, "_blank");
+    setIsSubmitted(true);
+    setTimeout(() => {
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        people: 1,
+        notes: ""
+      });
+      setSelectedVehicle(null);
+      setIsSubmitted(false);
+      setPickupDateTime("");
+      setDropDateTime("");
+    }, 3000);
+  };
+
+  return (
+    <main className="bg-gradient-to-b from-gray-50 to-white min-h-screen pb-20">
+      {/* Hero Banner */}
+      <section className="relative py-28 px-6 text-white text-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-teal-600 z-0"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center mix-blend-overlay opacity-20"></div>
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="relative z-10 max-w-4xl mx-auto"
+        >
+          <motion.span 
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-semibold mb-6"
+          >
+            Reserve Your Ride
+          </motion.span>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            Book Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-green-300">Adventure</span>
+          </h1>
+          <p className="text-xl max-w-2xl mx-auto leading-relaxed">
+            Choose from our premium fleet of cars and bikes. Select your vehicle, fill in your details, and hit book—adventure awaits.
+          </p>
+        </motion.div>
+      </section>
+      <section className="max-w-7xl mx-auto px-6 lg:px-8 mt-12">
+        {!selectedVehicle ? (
+          // Step 1: Vehicle Selection
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-3xl shadow-2xl overflow-hidden p-8"
+          >
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Choose Your Vehicle</h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">Select your ride & pricing is shown for 12hrs/24hrs!</p>
+            </div>
+            {/* Tabs for Cars vs Bikes */}
+            <div className="flex justify-center gap-4 mb-10">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setActiveTab("cars")}
+                className={`px-8 py-3 rounded-full font-bold transition-all ${
+                  activeTab === "cars"
+                    ? "bg-green-600 text-white shadow-md"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Car className="w-5 h-5" />
+                  <span>Cars ({cars.length})</span>
+                </div>
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setActiveTab("bikes")}
+                className={`px-8 py-3 rounded-full font-bold transition-all ${
+                  activeTab === "bikes"
+                    ? "bg-green-600 text-white shadow-md"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Bike className="w-5 h-5" />
+                  <span>Bikes ({bikes.length})</span>
+                </div>
+              </motion.button>
+            </div>
+            {/* Vehicle Grid */}
+            <motion.div
+              variants={staggerChildren}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            >
+              <AnimatePresence>
+                {(activeTab === "cars" ? cars : bikes).map((vehicle) => (
+                  <VehicleCard 
+                    key={vehicle.id} 
+                    vehicle={vehicle} 
+                    type={activeTab === "cars" ? "car" : "bike"} 
+                  />
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          </motion.div>
+        ) : (
+          // Step 2: Booking Form
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-3xl shadow-2xl overflow-hidden"
+          >
+            <div className="p-8 border-b border-gray-200">
+              <button 
+                onClick={() => setSelectedVehicle(null)}
+                className="flex items-center text-green-600 font-semibold mb-4"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to vehicle selection
+              </button>
+              <div className="flex items-center gap-4">
+                <div className="h-16 w-16 rounded-lg overflow-hidden">
+                  <img 
+                    src={selectedVehicle.image} 
+                    alt={selectedVehicle.name}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">{selectedVehicle.name}</h2>
+                  <div className="flex gap-2 text-green-600 font-semibold">
+                    <span>₹{selectedVehicle.price12hrs}/12hrs</span>
+                    <span>•</span>
+                    <span>₹{selectedVehicle.price24hrs}/24hrs</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <form className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+              {/* Left Column - Form */}
+              <div className="p-8 lg:p-12">
+                <motion.h2 
+                  variants={fadeIn}
+                  className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3"
+                >
+                  <div className="p-2 bg-blue-100 rounded-full">
+                    <CalendarDays className="w-5 h-5 text-blue-600" />
+                  </div>
+                  Booking Details
+                </motion.h2>
+                <motion.div
+                  variants={staggerChildren}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
+                  className="space-y-6"
+                >
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-green-600" />
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={form.name}
+                      onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                      required
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      placeholder="Your full name"
+                    />
+                  </motion.div>
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-green-600" />
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={form.email}
+                      onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                      required
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      placeholder="Your email address"
+                    />
+                  </motion.div>
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-green-600" />
+                      Phone
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={form.phone}
+                      onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
+                      required
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      placeholder="Your phone number"
+                    />
+                  </motion.div>
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                      <Users className="w-4 h-4 text-green-600" />
+                      Passengers
+                    </label>
+                    <input
+                      type="number"
+                      name="people"
+                      value={form.people}
+                      min="1"
+                      max="10"
+                      onChange={e => setForm(f => ({ ...f, people: e.target.value }))}
+                      required
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                    />
+                  </motion.div>
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                      <CalendarDays className="w-4 h-4 text-green-600" />
+                      Pickup Date &amp; Time
+                    </label>
+                    <input
+                      type="datetime-local"
+                      name="pickupDate"
+                      value={pickupDateTime}
+                      onChange={e => setPickupDateTime(e.target.value)}
+                      required
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                    />
+                  </motion.div>
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-green-600" />
+                      Return Date &amp; Time
+                    </label>
+                    <input
+                      type="datetime-local"
+                      name="dropDate"
+                      value={dropDateTime}
+                      onChange={e => setDropDateTime(e.target.value)}
+                      required
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                    />
+                  </motion.div>
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700">Special Requests / Notes</label>
+                    <textarea
+                      name="notes"
+                      value={form.notes}
+                      onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+                      rows={3}
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      placeholder="Let us know anything important..."
+                    />
+                  </motion.div>
+                </motion.div>
+              </div>
+              {/* Summary */}
+              <div className="bg-gradient-to-b from-green-50 to-teal-50 p-8 lg:p-12 border-l border-gray-200">
+                <motion.div
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                  viewport={{ once: true }}
+                  className="sticky top-8"
+                >
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                    <div className="p-2 bg-green-100 rounded-full">
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    </div>
+                    Booking Summary
+                  </h2>
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="bg-white rounded-2xl p-6 shadow-sm mb-8"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="h-16 w-16 rounded-lg overflow-hidden">
+                        <img 
+                          src={selectedVehicle.image} 
+                          alt={selectedVehicle.name}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-gray-900">{selectedVehicle.name}</h3>
+                        <div className="flex gap-2 text-green-600 font-semibold">
+                          <span>₹{selectedVehicle.price12hrs}/12hrs</span>
+                          <span>•</span>
+                          <span>₹{selectedVehicle.price24hrs}/24hrs</span>
+                        </div>
+                        <p className="text-gray-500 text-sm">{selectedVehicle.features}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                  <div className="bg-white rounded-2xl p-6 shadow-sm mb-8">
+                    <h3 className="font-bold text-gray-900 mb-4">Trip Details</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Passengers</span>
+                        <span className="font-medium">{form.people} {form.people > 1 ? "people" : "person"}</span>
+                      </div>
+                      {pickupDateTime && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Pickup</span>
+                          <span className="font-medium">{pickupDateTime.replace('T', ' ')}</span>
+                        </div>
+                      )}
+                      {dropDateTime && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Return</span>
+                          <span className="font-medium">{dropDateTime.replace('T', ' ')}</span>
+                        </div>
+                      )}
+                      {hourDiff > 0 && (
+                        <div className="pt-3 border-t border-gray-100">
+                          <div className="flex justify-between text-green-600 font-semibold">
+                            <span>Total Hours</span>
+                            <span>{hourDiff} hrs</span>
+                          </div>
+                          <div className="flex justify-between text-green-600 font-semibold mt-1">
+                            <span>Estimated Total</span>
+                            <span>₹{totalPrice}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-2xl p-6 shadow-sm mb-8">
+                    <h3 className="font-bold text-gray-900 mb-4">Contact Info</h3>
+                    <div className="space-y-3">
+                      {form.name && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Name</span>
+                          <span className="font-medium">{form.name}</span>
+                        </div>
+                      )}
+                      {form.email && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Email</span>
+                          <span className="font-medium">{form.email}</span>
+                        </div>
+                      )}
+                      {form.phone && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Phone</span>
+                          <span className="font-medium">{form.phone}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <AnimatePresence>
+                    {isSubmitted ? (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="bg-green-100 border border-green-200 text-green-700 p-6 rounded-2xl text-center"
+                      >
+                        <CheckCircle className="w-12 h-12 mx-auto mb-3" />
+                        <h3 className="font-bold text-lg mb-2">Booking Sent to WhatsApp!</h3>
+                        <p>We'll contact you soon to confirm your reservation.</p>
+                      </motion.div>
+                    ) : (
+                      <motion.button
+                        type="button"
+                        onClick={handleConfirm}
+                        whileHover="hover"
+                        variants={pulse}
+                        disabled={
+                          !form.name || !form.email || !form.phone ||
+                          !pickupDateTime || !dropDateTime
+                        }
+                        className="w-full bg-gradient-to-r from-green-600 to-teal-600 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <CheckCircle className="w-5 h-5" />
+                        Confirm Booking via WhatsApp
+                        <ArrowRight className="w-5 h-5" />
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              </div>
+            </form>
+          </motion.div>
+        )}
+      </section>
+    </main>
+  );
+};
+
+export default BookingPage;
+// by perplexity ai 
+
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Car, Bike, CalendarDays, Users, Clock, Mail, Phone, ArrowRight, CheckCircle, MapPin, Filter, Search, Fuel } from "lucide-react";
+
+const BookingPage = () => {
+  const [activeTab, setActiveTab] = useState("cars");
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [selectedPricing, setSelectedPricing] = useState("24hrs"); // "12hrs" or "24hrs"
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    people: 1,
+    pickupDate: "",
+    dropDate: "",
+    pickupTime: "",
+    dropTime: "",
+    notes: "",
+  });
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Sample data with 12hr and 24hr pricing
+  const cars = [
+    { 
+      id: 1, 
+      name: "Toyota Corolla", 
+      price12hr: "$30/12hr",
+      price24hr: "$50/day",
+      image: "https://images.unsplash.com/photo-1502877338535-766e56c3a7a7?auto=format&fit=crop&w=500&q=80",
+      features: "5 seats • Automatic • AC",
+      type: "economy",
+      fuel: "Petrol",
+      rating: 4.8
+    },
+    { 
+      id: 2, 
+      name: "Honda Civic", 
+      price12hr: "$28/12hr",
+      price24hr: "$45/day",
+      image: "https://images.unsplash.com/photo-1483728642387-6c2a897fa4c2?auto=format&fit=crop&w=500&q=80",
+      features: "5 seats • Manual • AC",
+      type: "economy",
+      fuel: "Hybrid",
+      rating: 4.7
+    },
+    { 
+      id: 3, 
+      name: "BMW 5 Series", 
+      price12hr: "$65/12hr",
+      price24hr: "$100/day",
+      image: "https://images.unsplash.com/photo-1511391403515-ec2e9a687df0?auto=format&fit=crop&w=500&q=80",
+      features: "4 seats • Automatic • Luxury",
+      type: "luxury",
+      fuel: "Petrol",
+      rating: 4.9
+    },
+    { 
+      id: 4, 
+      name: "Tesla Model 3", 
+      price12hr: "$55/12hr",
+      price24hr: "$85/day",
+      image: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=500&q=80",
+      features: "5 seats • Automatic • Electric",
+      type: "premium",
+      fuel: "Electric",
+      rating: 4.9
+    },
+    { 
+      id: 5, 
+      name: "Ford Mustang", 
+      price12hr: "$75/12hr",
+      price24hr: "$120/day",
+      image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=500&q=80",
+      features: "4 seats • Manual • Sport",
+      type: "sports",
+      fuel: "Petrol",
+      rating: 4.8
+    },
+    { 
+      id: 6, 
+      name: "Hyundai Tucson", 
+      price12hr: "$40/12hr",
+      price24hr: "$65/day",
+      image: "https://images.unsplash.com/photo-1593941707882-a5bba53377fe?auto=format&fit=crop&w=500&q=80",
+      features: "5 seats • Automatic • SUV",
+      type: "suv",
+      fuel: "Diesel",
+      rating: 4.6
+    },
+    { 
+      id: 7, 
+      name: "Audi Q7", 
+      price12hr: "$80/12hr",
+      price24hr: "$130/day",
+      image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=500&q=80",
+      features: "7 seats • Automatic • Luxury SUV",
+      type: "luxury",
+      fuel: "Petrol",
+      rating: 4.8
+    },
+    { 
+      id: 8, 
+      name: "Nissan Leaf", 
+      price12hr: "$35/12hr",
+      price24hr: "$60/day",
+      image: "https://images.unsplash.com/photo-1593941707882-a5bba53377fe?auto=format&fit=crop&w=500&q=80",
+      features: "5 seats • Automatic • Electric",
+      type: "economy",
+      fuel: "Electric",
+      rating: 4.5
+    },
+    { 
+      id: 9, 
+      name: "Jeep Wrangler", 
+      price12hr: "$55/12hr",
+      price24hr: "$90/day",
+      image: "https://images.unsplash.com/photo-1507136566006-cfc505b114fc?auto=format&fit=crop&w=500&q=80",
+      features: "5 seats • Manual • Off-road",
+      type: "suv",
+      fuel: "Petrol",
+      rating: 4.7
+    },
+    { 
+      id: 10, 
+      name: "Mercedes S-Class", 
+      price12hr: "$95/12hr",
+      price24hr: "$150/day",
+      image: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=500&q=80",
+      features: "5 seats • Automatic • Executive",
+      type: "luxury",
+      fuel: "Petrol",
+      rating: 4.9
+    },
+  ];
+
+  const bikes = [
+    { 
+      id: 1, 
+      name: "Royal Enfield Classic", 
+      price12hr: "$15/12hr",
+      price24hr: "$25/day",
+      image: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Cruiser",
+      type: "cruiser",
+      engine: "350cc",
+      rating: 4.7
+    },
+    { 
+      id: 2, 
+      name: "Yamaha FZ", 
+      price12hr: "$12/12hr",
+      price24hr: "$20/day",
+      image: "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Street",
+      type: "street",
+      engine: "150cc",
+      rating: 4.6
+    },
+    { 
+      id: 3, 
+      name: "KTM Duke", 
+      price12hr: "$18/12hr",
+      price24hr: "$30/day",
+      image: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Sport",
+      type: "sports",
+      engine: "390cc",
+      rating: 4.8
+    },
+    { 
+      id: 4, 
+      name: "Harley Davidson", 
+      price12hr: "$45/12hr",
+      price24hr: "$75/day",
+      image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Touring",
+      type: "touring",
+      engine: "1200cc",
+      rating: 4.9
+    },
+    { 
+      id: 5, 
+      name: "Honda CB500X", 
+      price12hr: "$25/12hr",
+      price24hr: "$45/day",
+      image: "https://images.unsplash.com/photo-1571068316344-75bc76f77890?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Adventure",
+      type: "adventure",
+      engine: "500cc",
+      rating: 4.7
+    },
+    { 
+      id: 6, 
+      name: "Ducati Monster", 
+      price12hr: "$50/12hr",
+      price24hr: "$85/day",
+      image: "https://images.unsplash.com/photo-1609630875171-b1321377ee65?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Naked",
+      type: "naked",
+      engine: "800cc",
+      rating: 4.9
+    },
+    { 
+      id: 7, 
+      name: "Suzuki Hayabusa", 
+      price12hr: "$55/12hr",
+      price24hr: "$95/day",
+      image: "https://images.unsplash.com/photo-1623778027845-1a3c58d3376b?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Sport",
+      type: "sports",
+      engine: "1300cc",
+      rating: 4.8
+    },
+    { 
+      id: 8, 
+      name: "Triumph Tiger", 
+      price12hr: "$40/12hr",
+      price24hr: "$70/day",
+      image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Adventure",
+      type: "adventure",
+      engine: "900cc",
+      rating: 4.7
+    },
+    { 
+      id: 9, 
+      name: "Kawasaki Ninja", 
+      price12hr: "$32/12hr",
+      price24hr: "$55/day",
+      image: "https://images.unsplash.com/photo-1609630875171-b1321377ee65?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Manual • Sport",
+      type: "sports",
+      engine: "650cc",
+      rating: 4.6
+    },
+    { 
+      id: 10, 
+      name: "Vespa Primavera", 
+      price12hr: "$15/12hr",
+      price24hr: "$25/day",
+      image: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?auto=format&fit=crop&w=500&q=80",
+      features: "2 seats • Automatic • Scooter",
+      type: "scooter",
+      engine: "150cc",
+      rating: 4.5
+    },
+  ];
+
+  const handleChange = (e) => {
+    setForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    // Calculate total price
+    const totalPrice = calculateTotalPrice();
+    
+    // Prepare WhatsApp message
+    const whatsappMessage = `New Booking Request:%0A%0A
+*Vehicle:* ${selectedVehicle.name}%0A
+*Pricing Option:* ${selectedPricing === '12hrs' ? '12 Hours' : '24 Hours'}%0A
+*Price:* ${selectedPricing === '12hrs' ? selectedVehicle.price12hr : selectedVehicle.price24hr}%0A
+*Total Estimated Cost:* $${totalPrice}%0A%0A
+*Customer Details:*%0A
+Name: ${form.name}%0A
+Email: ${form.email}%0A
+Phone: ${form.phone}%0A
+Passengers: ${form.people}%0A%0A
+*Trip Details:*%0A
+Pickup: ${form.pickupDate} at ${form.pickupTime}%0A
+Return: ${form.dropDate} at ${form.dropTime}%0A%0A
+*Special Requests:*%0A${form.notes || 'None'}`;
+
+    // Open WhatsApp with pre-filled message
+    window.open(`https://wa.me/1234567890?text=${whatsappMessage}`, '_blank');
+    
+    setIsSubmitted(true);
+    
+    // Reset form after 3 seconds
+    setTimeout(() => {
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        people: 1,
+        pickupDate: "",
+        dropDate: "",
+        pickupTime: "",
+        dropTime: "",
+        notes: "",
+      });
+      setSelectedVehicle(null);
+      setSelectedPricing("24hrs");
+      setIsSubmitted(false);
+    }, 3000);
+  };
+
+  // Calculate total price based on duration and pricing option
+  const calculateTotalPrice = () => {
+    if (!form.pickupDate || !form.dropDate || !form.pickupTime || !form.dropTime) return 0;
+    
+    const pickupDateTime = new Date(`${form.pickupDate}T${form.pickupTime}`);
+    const dropDateTime = new Date(`${form.dropDate}T${form.dropTime}`);
+    
+    // Calculate difference in hours
+    const diffTime = Math.abs(dropDateTime - pickupDateTime);
+    const diffHours = Math.ceil(diffTime / (1000 * 60 * 60));
+    
+    // Get base price based on selected pricing option
+    const priceString = selectedPricing === '12hrs' 
+      ? selectedVehicle.price12hr 
+      : selectedVehicle.price24hr;
+    
+    const pricePerUnit = parseFloat(priceString.replace(/\$/g, '').replace(/\/.*$/, ''));
+    
+    // Calculate total based on pricing option
+    if (selectedPricing === '12hrs') {
+      // For 12hr pricing, calculate how many 12hr blocks
+      const twelveHourBlocks = Math.ceil(diffHours / 12);
+      return twelveHourBlocks * pricePerUnit;
+    } else {
+      // For 24hr pricing, calculate how many days
+      const days = Math.ceil(diffHours / 24);
+      return days * pricePerUnit;
+    }
+  };
+
+  // Calculate duration in hours
+  const calculateDuration = () => {
+    if (!form.pickupDate || !form.dropDate || !form.pickupTime || !form.dropTime) return 0;
+    
+    const pickupDateTime = new Date(`${form.pickupDate}T${form.pickupTime}`);
+    const dropDateTime = new Date(`${form.dropDate}T${form.dropTime}`);
+    
+    const diffTime = Math.abs(dropDateTime - pickupDateTime);
+    return Math.ceil(diffTime / (1000 * 60 * 60));
+  };
+
+  // Animation variants
+  const fadeIn = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" }
+    }
+  };
+
+  const staggerChildren = {
+    visible: {
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const cardHover = {
+    hover: { 
+      scale: 1.03,
+      y: -5,
+      transition: { duration: 0.3 }
+    }
+  };
+
+  const pulse = {
+    hover: { 
+      scale: 1.05,
+      transition: { 
+        duration: 0.3,
+        repeat: Infinity,
+        repeatType: "reverse",
+        repeatDelay: 0.5
+      }
+    }
+  };
+
+  const VehicleCard = ({ vehicle, type }) => (
+    <motion.div
+      variants={fadeIn}
+      whileHover="hover"
+      className={`rounded-2xl p-4 flex flex-col border-2 font-semibold transition-all overflow-hidden relative bg-white cursor-pointer
+        ${selectedVehicle?.id === vehicle.id ? "border-green-500 bg-green-50" : "border-gray-200 hover:border-green-300"}`}
+      onClick={() => setSelectedVehicle(vehicle)}
+    >
+      {/* Selection indicator */}
+      {selectedVehicle?.id === vehicle.id && (
+        <motion.div 
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="absolute top-2 right-2 bg-green-500 rounded-full p-1"
+        >
+          <CheckCircle className="w-4 h-4 text-white" />
+        </motion.div>
+      )}
+      
+      <div className="h-40 w-full mb-3 rounded-lg overflow-hidden">
+        <img 
+          src={vehicle.image} 
+          alt={vehicle.name}
+          className="h-full w-full object-cover"
+        />
+      </div>
+      
+      <h3 className="text-gray-900 font-bold">{vehicle.name}</h3>
+      
+      {/* Pricing Options */}
+      <div className="flex justify-between items-center mt-2">
+        <span className="text-green-600 font-semibold text-sm">{vehicle.price12hr}</span>
+        <span className="text-green-600 font-semibold text-sm">{vehicle.price24hr}</span>
+      </div>
+      
+      <p className="text-gray-500 text-sm mt-1">{vehicle.features.split('•')[0]}</p>
+      
+      <div className="flex items-center mt-3">
+        <div className="flex items-center text-amber-500">
+          <span className="text-sm font-bold mr-1">{vehicle.rating}</span>
+          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+          </svg>
+        </div>
+        
+        {type === "car" ? (
+          <div className="ml-auto flex items-center text-sm text-gray-500">
+            <Fuel className="w-4 h-4 mr-1" />
+            <span>{vehicle.fuel}</span>
+          </div>
+        ) : (
+          <div className="ml-auto text-sm text-gray-500">
+            <span>{vehicle.engine}</span>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+
+  return (
+    <main className="bg-gradient-to-b from-gray-50 to-white min-h-screen pb-20">
+      {/* Hero Banner */}
+      <section className="relative py-28 px-6 text-white text-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-teal-600 z-0"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center mix-blend-overlay opacity-20"></div>
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="relative z-10 max-w-4xl mx-auto"
+        >
+          <motion.span 
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-semibold mb-6"
+          >
+            Reserve Your Ride
+          </motion.span>
+          
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            Book Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-green-300">Adventure</span>
+          </h1>
+          
+          <p className="text-xl max-w-2xl mx-auto leading-relaxed">
+            Choose from our premium fleet of cars and bikes. Select your vehicle, fill in your details, and hit book—adventure awaits.
+          </p>
+        </motion.div>
+      </section>
+
+      {/* Two-step process: Vehicle selection then booking form */}
+      <section className="max-w-7xl mx-auto px-6 lg:px-8 mt-12">
+        {!selectedVehicle ? (
+          // Step 1: Vehicle Selection
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-3xl shadow-2xl overflow-hidden p-8"
+          >
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Choose Your Vehicle</h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Select from our premium fleet of cars and bikes. All vehicles offer both 12-hour and 24-hour pricing options.
+              </p>
+            </div>
+
+            {/* Tabs for Cars vs Bikes */}
+            <div className="flex justify-center gap-4 mb-10">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setActiveTab("cars")}
+                className={`px-8 py-3 rounded-full font-bold transition-all ${
+                  activeTab === "cars"
+                    ? "bg-green-600 text-white shadow-md"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Car className="w-5 h-5" />
+                  <span>Cars ({cars.length})</span>
+                </div>
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setActiveTab("bikes")}
+                className={`px-8 py-3 rounded-full font-bold transition-all ${
+                  activeTab === "bikes"
+                    ? "bg-green-600 text-white shadow-md"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Bike className="w-5 h-5" />
+                  <span>Bikes ({bikes.length})</span>
+                </div>
+              </motion.button>
+            </div>
+
+            {/* Vehicle Grid */}
+            <motion.div
+              variants={staggerChildren}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            >
+              <AnimatePresence>
+                {(activeTab === "cars" ? cars : bikes).map((vehicle) => (
+                  <VehicleCard 
+                    key={vehicle.id} 
+                    vehicle={vehicle} 
+                    type={activeTab === "cars" ? "car" : "bike"} 
+                  />
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          </motion.div>
+        ) : (
+          // Step 2: Booking Form
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-3xl shadow-2xl overflow-hidden"
+          >
+            <div className="p-8 border-b border-gray-200">
+              <button 
+                onClick={() => setSelectedVehicle(null)}
+                className="flex items-center text-green-600 font-semibold mb-4"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to vehicle selection
+              </button>
+              
+              <div className="flex items-center gap-4">
+                <div className="h-16 w-16 rounded-lg overflow-hidden">
+                  <img 
+                    src={selectedVehicle.image} 
+                    alt={selectedVehicle.name}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">{selectedVehicle.name}</h2>
+                  <div className="flex gap-4 mt-1">
+                    <span className="text-green-600 font-semibold">{selectedVehicle.price12hr}</span>
+                    <span className="text-green-600 font-semibold">{selectedVehicle.price24hr}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Pricing Option Selection */}
+              <div className="mt-6">
+                <h3 className="font-semibold text-gray-900 mb-3">Select Pricing Option:</h3>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setSelectedPricing("12hrs")}
+                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      selectedPricing === "12hrs"
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    12 Hours
+                  </button>
+                  <button
+                    onClick={() => setSelectedPricing("24hrs")}
+                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      selectedPricing === "24hrs"
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    24 Hours
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+              {/* Left Column - Form */}
+              <div className="p-8 lg:p-12">
+                <motion.h2 
+                  variants={fadeIn}
+                  className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3"
+                >
+                  <div className="p-2 bg-blue-100 rounded-full">
+                    <CalendarDays className="w-5 h-5 text-blue-600" />
+                  </div>
+                  Booking Details
+                </motion.h2>
+                
+                <motion.div
+                  variants={staggerChildren}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
+                  className="space-y-6"
+                >
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-green-600" />
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={form.name}
+                      onChange={handleChange}
+                      required
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      placeholder="Your full name"
+                    />
+                  </motion.div>
+                  
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-green-600" />
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={form.email}
+                      onChange={handleChange}
+                      required
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      placeholder="Your email address"
+                    />
+                  </motion.div>
+                  
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-green-600" />
+                      Phone
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={form.phone}
+                      onChange={handleChange}
+                      required
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      placeholder="Your phone number"
+                    />
+                  </motion.div>
+                  
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                      <Users className="w-4 h-4 text-green-600" />
+                      Passengers
+                    </label>
+                    <input
+                      type="number"
+                      name="people"
+                      value={form.people}
+                      min="1"
+                      max="10"
+                      onChange={handleChange}
+                      required
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                    />
+                  </motion.div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <motion.div variants={fadeIn}>
+                      <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                        <CalendarDays className="w-4 h-4 text-green-600" />
+                        Pickup Date
+                      </label>
+                      <input
+                        type="date"
+                        name="pickupDate"
+                        value={form.pickupDate}
+                        onChange={handleChange}
+                        required
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      />
+                    </motion.div>
+
+                    <motion.div variants={fadeIn}>
+                      <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-green-600" />
+                        Pickup Time
+                      </label>
+                      <input
+                        type="time"
+                        name="pickupTime"
+                        value={form.pickupTime}
+                        onChange={handleChange}
+                        required
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      />
+                    </motion.div>
+
+                    <motion.div variants={fadeIn}>
+                      <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                        <CalendarDays className="w-4 h-4 text-green-600" />
+                        Return Date
+                      </label>
+                      <input
+                        type="date"
+                        name="dropDate"
+                        value={form.dropDate}
+                        onChange={handleChange}
+                        required
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      />
+                    </motion.div>
+
+                    <motion.div variants={fadeIn}>
+                      <label className="block font-semibold mb-2 text-gray-700 flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-green-600" />
+                        Return Time
+                      </label>
+                      <input
+                        type="time"
+                        name="dropTime"
+                        value={form.dropTime}
+                        onChange={handleChange}
+                        required
+                        className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      />
+                    </motion.div>
+                  </div>
+                  
+                  <motion.div variants={fadeIn}>
+                    <label className="block font-semibold mb-2 text-gray-700">
+                      Special Requests / Notes
+                    </label>
+                    <textarea
+                      name="notes"
+                      value={form.notes}
+                      onChange={handleChange}
+                      rows={3}
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      placeholder="Let us know anything important..."
+                    />
+                  </motion.div>
+                </motion.div>
+              </div>
+
+              {/* Right Column - Summary */}
+              <div className="bg-gradient-to-b from-green-50 to-teal-50 p-8 lg:p-12 border-l border-gray-200">
+                <motion.div
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                  viewport={{ once: true }}
+                  className="sticky top-8"
+                >
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                    <div className="p-2 bg-green-100 rounded-full">
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    </div>
+                    Booking Summary
+                  </h2>
+                  
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="bg-white rounded-2xl p-6 shadow-sm mb-8"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="h-16 w-16 rounded-lg overflow-hidden">
+                        <img 
+                          src={selectedVehicle.image} 
+                          alt={selectedVehicle.name}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-gray-900">{selectedVehicle.name}</h3>
+                        <p className="text-green-600 font-semibold">
+                          {selectedPricing === '12hrs' ? selectedVehicle.price12hr : selectedVehicle.price24hr}
+                        </p>
+                        <p className="text-gray-500 text-sm">{selectedVehicle.features}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                  
+                  <div className="bg-white rounded-2xl p-6 shadow-sm mb-8">
+                    <h3 className="font-bold text-gray-900 mb-4">Trip Details</h3>
+                    
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Passengers</span>
+                        <span className="font-medium">{form.people} {form.people > 1 ? "people" : "person"}</span>
+                      </div>
+                      
+                      {form.pickupDate && form.pickupTime && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Pickup</span>
+                          <span className="font-medium">{form.pickupDate} at {form.pickupTime}</span>
+                        </div>
+                      )}
+                      
+                      {form.dropDate && form.dropTime && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Return</span>
+                          <span className="font-medium">{form.dropDate} at {form.dropTime}</span>
+                        </div>
+                      )}
+                      
+                      {form.pickupDate && form.dropDate && form.pickupTime && form.dropTime && (
+                        <>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Duration</span>
+                            <span className="font-medium">{calculateDuration()} hours</span>
+                          </div>
+                          
+                          <div className="pt-3 border-t border-gray-100">
+                            <div className="flex justify-between text-green-600 font-semibold">
+                              <span>Estimated Total</span>
+                              <span>${calculateTotalPrice()}</span>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white rounded-2xl p-6 shadow-sm mb-8">
+                    <h3 className="font-bold text-gray-900 mb-4">Contact Info</h3>
+                    
+                    <div className="space-y-3">
+                      {form.name && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Name</span>
+                          <span className="font-medium">{form.name}</span>
+                        </div>
+                      )}
+                      
+                      {form.email && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Email</span>
+                          <span className="font-medium">{form.email}</span>
+                        </div>
+                      )}
+                      
+                      {form.phone && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Phone</span>
+                          <span className="font-medium">{form.phone}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <AnimatePresence>
+                    {isSubmitted ? (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="bg-green-100 border border-green-200 text-green-700 p-6 rounded-2xl text-center"
+                      >
+                        <CheckCircle className="w-12 h-12 mx-auto mb-3" />
+                        <h3 className="font-bold text-lg mb-2">Booking Submitted!</h3>
+                        <p>We'll contact you soon to confirm your reservation.</p>
+                      </motion.div>
+                    ) : (
+                      <motion.button
+                        type="submit"
+                        whileHover="hover"
+                        variants={pulse}
+                        disabled={!form.name || !form.email || !form.phone || !form.pickupDate || !form.dropDate || !form.pickupTime || !form.dropTime}
+                        className="w-full bg-gradient-to-r from-green-600 to-teal-600 text-white font-bold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <CheckCircle className="w-5 h-5" />
+                        Confirm Booking via WhatsApp
+                        <ArrowRight className="w-5 h-5" />
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              </div>
+            </form>
+          </motion.div>
+        )}
+      </section>
+    </main>
+  );
+};
+
+export default BookingPage;
+
+// by deepseek
